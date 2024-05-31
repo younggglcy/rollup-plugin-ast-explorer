@@ -1,0 +1,42 @@
+{
+  "name": "rollup-plugin-ast-explorer-workspace",
+  "type": "module",
+  "private": true,
+  "packageManager": "pnpm@9.1.4",
+  "author": {
+    "name": "younggglcy",
+    "email": "younggglcy@gmail.com"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/younggglcy/rollup-plugin-ast-explorer",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/younggglcy/rollup-plugin-ast-explorer.git"
+  },
+  "scripts": {
+    "preinstall": "npx only-allow pnpm",
+    "test": "echo 'To be done' && exit 0",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "^2.19.1",
+    "@types/node": "^20.12.13",
+    "conventional-changelog-cli": "^5.0.0",
+    "eslint": "^9.3.0",
+    "lint-staged": "^15.2.5",
+    "simple-git-hooks": "^2.11.1",
+    "typescript": "^5.4.5"
+  },
+  "pnpm": {
+    "overrides": {
+      "rollup-plugin-ast-explorer": "workspace:*"
+    }
+  },
+  "simple-git-hooks": {
+    "pre-commit": "pnpm exec lint-staged"
+  },
+  "lint-staged": {
+    "*": "eslint --cache --fix"
+  }
+}

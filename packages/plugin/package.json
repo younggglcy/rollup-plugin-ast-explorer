@@ -1,0 +1,26 @@
+{
+  "name": "rollup-plugin-ast-explorer",
+  "type": "module",
+  "version": "0.0.0",
+  "description": "Inspect Rollup's AST of each module",
+  "author": {
+    "name": "younggglcy",
+    "email": "younggglcy@gmail.com"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/younggglcy/rollup-plugin-ast-explorer.git",
+    "directory": "packages/plugin"
+  },
+  "bugs": {
+    "url": "https://github.com/younggglcy/rollup-plugin-ast-explorer/issues"
+  },
+  "keywords": [
+    "rollup",
+    "plugin",
+    "rollup-plugin",
+    "rollup ast",
+    "ast"
+  ]
+}
