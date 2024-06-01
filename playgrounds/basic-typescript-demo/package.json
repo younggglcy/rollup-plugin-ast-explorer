@@ -1,0 +1,8 @@
+{
+  "name": "basic-typescript-demo",
+  "type": "module",
+  "scripts": {
+    "dev": "rollup -c rollup.config.js -w",
+    "build": "rollup -c rollup.config.js"
+  }
+}
