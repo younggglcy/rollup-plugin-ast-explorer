@@ -11,7 +11,7 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/younggglcy/rollup-plugin-ast-explorer.git",
-    "directory": "packages/plugin"
+    "directory": "packages/rollup-plugin-ast-explorer"
   },
   "bugs": {
     "url": "https://github.com/younggglcy/rollup-plugin-ast-explorer/issues"
@@ -22,5 +22,22 @@
     "rollup-plugin",
     "rollup ast",
     "ast"
-  ]
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js"
+    }
+  },
+  "main": "./dist/esm/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/types/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "dev": "rimraf dist && rollup -c rollup.config.js -w",
+    "build": "rimraf dist && rollup -c rollup.config.js"
+  }
 }
