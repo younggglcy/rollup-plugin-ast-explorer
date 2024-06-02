@@ -15,18 +15,24 @@
   },
   "scripts": {
     "preinstall": "npx only-allow pnpm",
+    "dev": "pnpm --filter './packages/*' dev",
+    "build": "pnpm --filter './packages/*' build",
     "test": "echo 'To be done' && exit 0",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^2.19.2",
+    "@rollup/plugin-commonjs": "^25.0.8",
     "@rollup/plugin-typescript": "^11.1.6",
     "@types/node": "^20.13.0",
     "conventional-changelog-cli": "^5.0.0",
     "eslint": "^9.4.0",
     "lint-staged": "^15.2.5",
+    "rimraf": "^5.0.7",
     "rollup": "^4.18.0",
+    "rollup-plugin-dts": "^6.1.1",
+    "rollup-plugin-node-externals": "^7.1.2",
     "simple-git-hooks": "^2.11.1",
     "typescript": "^5.4.5"
   },

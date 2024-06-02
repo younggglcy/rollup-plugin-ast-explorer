@@ -1,5 +1,6 @@
 import { defineConfig } from 'rollup'
 import typescript from '@rollup/plugin-typescript'
+import { astExplorer } from 'rollup-plugin-ast-explorer'
 
 /**
  * @type {import('rollup').RollupOptions}
@@ -14,5 +15,6 @@ export default defineConfig({
   },
   plugins: [
     typescript(),
+    astExplorer(),
   ],
 })
