@@ -14,7 +14,7 @@
     "url": "git+https://github.com/younggglcy/rollup-plugin-ast-explorer.git"
   },
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=20.14.0"
   },
   "scripts": {
     "preinstall": "npx only-allow pnpm",
