@@ -13,6 +13,9 @@
     "type": "git",
     "url": "git+https://github.com/younggglcy/rollup-plugin-ast-explorer.git"
   },
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "scripts": {
     "preinstall": "npx only-allow pnpm",
     "dev": "pnpm --filter './packages/*' dev",
@@ -23,16 +26,16 @@
   },
   "devDependencies": {
     "@antfu/eslint-config": "^2.19.2",
-    "@rollup/plugin-commonjs": "^26.0.1",
+    "@eslint-react/eslint-plugin": "^1.5.15",
     "@rollup/plugin-typescript": "^11.1.6",
     "@types/node": "^20.13.0",
     "conventional-changelog-cli": "^5.0.0",
     "eslint": "^9.4.0",
+    "eslint-plugin-react-hooks": "^4.6.2",
+    "eslint-plugin-react-refresh": "^0.4.7",
     "lint-staged": "^15.2.5",
     "rimraf": "^5.0.7",
     "rollup": "^4.18.0",
-    "rollup-plugin-dts": "^6.1.1",
-    "rollup-plugin-node-externals": "^7.1.2",
     "simple-git-hooks": "^2.11.1",
     "typescript": "^5.4.5"
   },
