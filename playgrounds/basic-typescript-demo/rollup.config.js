@@ -6,10 +6,7 @@ import { astExplorer } from 'rollup-plugin-ast-explorer'
  * @type {import('rollup').RollupOptions}
  */
 export default defineConfig({
-  input: [
-    'src/index.ts',
-    'src/math.ts',
-  ],
+  input: 'src/index.ts',
   output: {
     dir: 'dist',
   },
