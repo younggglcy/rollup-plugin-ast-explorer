@@ -3,10 +3,10 @@
     "target": "ESNext",
     "module": "ESNext",
     "paths": {
-      "rollup-plugin-ast-explorer": ["packages/rollup-plugin-ast-explorer/src/*", "packages/rollup-plugin-ast-explorer/dist/*"]
+      "rollup-plugin-ast-explorer": ["./packages/rollup-plugin-ast-explorer/src/*", "packages/rollup-plugin-ast-explorer/dist/*"]
     },
     "strict": true,
-    "outDir": "dist",
+    "declaration": false,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true
