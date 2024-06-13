@@ -1,5 +1,5 @@
 {
-  "extends": "../../tsconfig.base.json",
+  "extends": "./tsconfig.base.json",
   "compilerOptions": {
     "jsx": "react-jsx",
     "lib": ["ESNext", "DOM"],
@@ -11,6 +11,5 @@
     "resolveJsonModule": true,
     "noEmit": true
   },
-  "include": ["./src", "./rollup.config.ts"],
-  "exclude": ["dist", "node_modules"]
+  "include": ["./src", "./rollup.config.ts"]
 }
