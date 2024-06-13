@@ -1,13 +1,19 @@
-import { resolve } from 'node:path'
 import { renderToPipeableStream } from 'react-dom/server'
-import { dirname } from '../constants'
 import { App } from './App'
 
-const { pipe } = renderToPipeableStream(
-  <App />,
-  {
-    bootstrapScripts: [resolve(dirname, 'bootstrap.js')],
-  },
-)
+export const assetsMap = {
+  '/dist/assets/styles/app.css': '/styles/app.css',
+  '/dist/assets/bootstrap.js': '/bootstrap.js',
+} as const
 
-export { pipe }
+export function generatePipeableStream() {
+  return renderToPipeableStream(
+    <App assetsMap={assetsMap} />,
+    {
+      bootstrapScriptContent: `window.assetsMap = ${JSON.stringify(assetsMap)};`,
+      bootstrapScripts: [
+        assetsMap['/dist/assets/bootstrap.js'],
+      ],
+    },
+  ).pipe
+}

@@ -74,17 +74,23 @@ const dtsConfig = defineConfig({
   ],
 })
 
-const assertsConfig = defineConfig({
+const assetsConfig = defineConfig({
   input: [
     'src/client/bootstrap.tsx',
   ],
   output: {
-    dir: 'dist/asserts',
+    dir: 'dist/assets',
     format: 'esm',
     sourcemap: true,
   },
   plugins: [
     ...shared,
+    replace({
+      preventAssignment: true,
+      values: {
+        'process.env.NODE_ENV': JSON.stringify('production'),
+      },
+    }),
     {
       name: 'copy-and-watch-css',
       buildStart() {
@@ -102,4 +108,4 @@ const assertsConfig = defineConfig({
   ],
 })
 
-export default defineConfig([mainConfig, dtsConfig, assertsConfig])
+export default defineConfig([mainConfig, dtsConfig, assetsConfig])
