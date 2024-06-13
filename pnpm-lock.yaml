@@ -17,6 +17,9 @@ importers:
       crossws:
         specifier: ^0.2.4
         version: 0.2.4
+      debug:
+        specifier: ^4.3.5
+        version: 4.3.5
       detect-port:
         specifier: ^1.6.1
         version: 1.6.1
@@ -81,9 +84,6 @@ importers:
       conventional-changelog-cli:
         specifier: ^5.0.0
         version: 5.0.0(conventional-commits-filter@5.0.0)
-      debug:
-        specifier: ^4.3.5
-        version: 4.3.5
       eslint:
         specifier: ^9.4.0
         version: 9.4.0
