@@ -3,7 +3,7 @@
     "target": "ESNext",
     "module": "ESNext",
     "paths": {
-      "rollup-plugin-ast-explorer": ["./packages/rollup-plugin-ast-explorer/src/*", "packages/rollup-plugin-ast-explorer/dist/*"]
+      "rollup-plugin-ast-explorer": ["./src/*", "./dist/*"]
     },
     "strict": true,
     "declaration": false,

@@ -1,7 +1,7 @@
-import type { Plugin } from 'rollup'
+import type { ModuleInfo, Plugin } from 'rollup'
 import type { AppOptions } from 'h3'
+import { logger } from './node/logger'
 import { createServer } from '@/node/server'
-import { logger } from '@/node/logger'
 import { HOST, PORT } from '@/node/constants'
 
 /**
@@ -36,19 +36,12 @@ export function astExplorer(options?: ASTExplorerOptions): Plugin {
   } = options ?? {}
 
   let server: Awaited<ReturnType<typeof createServer>>
+  const moduleInfosMap = new Map<string, ModuleInfo>()
 
   return {
     name: 'rollup-plugin-ast-explorer',
 
     version: __ROLLUP_PLUGIN_AST_EXPLORER_VERSION__,
-
-    watchChange: {
-      order: 'pre',
-      sequential: false,
-      handler: (id, change) => {
-        logger('watchChange', id, change.event)
-      },
-    },
 
     buildStart: {
       order: 'pre',
@@ -63,8 +56,19 @@ export function astExplorer(options?: ASTExplorerOptions): Plugin {
     moduleParsed: {
       order: 'pre',
       sequential: false,
-      handler: (_info) => {
+      handler: (info) => {
+        moduleInfosMap.set(info.id, info)
+      },
+    },
 
+    buildEnd: {
+      order: 'post',
+      sequential: false,
+      handler(error) {
+        if (error) {
+          logger('Error during build', error)
+          // TODO: display on client side
+        }
       },
     },
   }

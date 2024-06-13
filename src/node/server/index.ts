@@ -2,9 +2,11 @@ import { createServer as createHttpServer } from 'node:http'
 import detect from 'detect-port'
 import { createApp, toNodeListener } from 'h3'
 import { cyan } from 'picocolors'
+import wsAdapter from 'crossws/adapters/node'
 import { logger } from '../logger'
 import { HOST, PORT } from '../constants'
 import { router } from './router'
+import { websocketHandler } from './websockets'
 import type { ASTExplorerServerOptions } from '@/index'
 
 export async function createServer(options: ASTExplorerServerOptions) {
@@ -17,7 +19,9 @@ export async function createServer(options: ASTExplorerServerOptions) {
   const app = createApp(h3AppOptions)
   app
     .use(router)
+    .use('/_ws', websocketHandler)
 
+  const { handleUpgrade } = wsAdapter(app.websocket)
   const server = createHttpServer(toNodeListener(app))
   const port = await detect({
     hostname: host,
@@ -25,6 +29,7 @@ export async function createServer(options: ASTExplorerServerOptions) {
   })
   const address = `http://${host}:${port}`
   return server
+    .on('upgrade', handleUpgrade)
     .listen(port, host, () => {
       logger(`Server started listening on ${address}`)
       // eslint-disable-next-line no-console
