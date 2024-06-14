@@ -9,6 +9,7 @@ import commonjs from '@rollup/plugin-commonjs'
 import replace from '@rollup/plugin-replace'
 import { nodeResolve } from '@rollup/plugin-node-resolve'
 import alias from '@rollup/plugin-alias'
+import json from '@rollup/plugin-json'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 
@@ -19,6 +20,7 @@ const { version } = JSON.parse(readFileSync(pkgJsonPath, 'utf-8')) as { version:
 const stylesPath = resolve(__dirname, 'src/node/ssr/styles')
 
 const shared = [
+  json(),
   commonjs(),
   alias({
     entries: [
@@ -81,7 +83,6 @@ const assetsConfig = defineConfig({
   output: {
     dir: 'dist/assets',
     format: 'esm',
-    sourcemap: true,
   },
   plugins: [
     ...shared,

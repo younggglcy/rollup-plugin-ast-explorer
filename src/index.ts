@@ -1,5 +1,8 @@
+import { Buffer } from 'node:buffer'
 import type { ModuleInfo, Plugin } from 'rollup'
 import type { AppOptions } from 'h3'
+import type { connection as Connection } from 'websocket'
+import { client as Client } from 'websocket'
 import { logger } from './node/logger'
 import { createServer } from '@/node/server'
 import { HOST, PORT } from '@/node/constants'
@@ -36,6 +39,8 @@ export function astExplorer(options?: ASTExplorerOptions): Plugin {
   } = options ?? {}
 
   let server: Awaited<ReturnType<typeof createServer>>
+  let wsClient: Client
+  let wsConnection: Connection
   const moduleInfosMap = new Map<string, ModuleInfo>()
 
   return {
@@ -50,6 +55,29 @@ export function astExplorer(options?: ASTExplorerOptions): Plugin {
         if (!server) {
           server = await createServer(serverOptions)
         }
+        if (!wsClient) {
+          wsClient = new Client()
+          wsClient.on('connectFailed', (err) => {
+            logger('websocket client connect failed', err)
+          })
+        }
+        return new Promise((resolve) => {
+          wsClient.on('connect', (connection) => {
+            logger('websocket client connected')
+            connection.on('error', (error) => {
+              logger('websocket client connection error', error)
+            })
+            connection.on('close', () => {
+              logger('websocket client connection closed')
+            })
+            connection.on('message', (message) => {
+              logger('websocket client received message', message)
+            })
+            wsConnection = connection
+            resolve()
+          })
+          wsClient.connect(`${server.address()}/_ws`, 'echo-protocol')
+        })
       },
     },
 
@@ -69,6 +97,7 @@ export function astExplorer(options?: ASTExplorerOptions): Plugin {
           logger('Error during build', error)
           // TODO: display on client side
         }
+        wsConnection.send(Buffer.from(JSON.stringify(Array.from(moduleInfosMap.entries()))))
       },
     },
   }
