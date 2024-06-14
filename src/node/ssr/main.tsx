@@ -1,17 +1,25 @@
 import { renderToPipeableStream } from 'react-dom/server'
+import type { AppProps } from './App'
 import { App } from './App'
 
-export const assetsMap = {
-  '/dist/assets/styles/app.css': '/styles/app.css',
-  '/dist/assets/bootstrap.js': '/bootstrap.js',
-} as const
+export function generatePipeableStream(options: {
+  props: AppProps
+}) {
+  const {
+    props: {
+      assetsMap,
+    },
+  } = options
 
-export function generatePipeableStream() {
   return renderToPipeableStream(
-    <App assetsMap={assetsMap} />,
+    <App
+      assetsMap={assetsMap}
+    />,
     {
-      bootstrapScriptContent: `window.assetsMap = ${JSON.stringify(assetsMap)};`,
-      bootstrapScripts: [
+      bootstrapScriptContent: `
+        window.assetsMap = ${JSON.stringify(assetsMap)};
+      `,
+      bootstrapModules: [
         assetsMap['/dist/assets/bootstrap.js'],
       ],
     },
