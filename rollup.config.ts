@@ -31,7 +31,6 @@ const shared = [
     ],
   }),
   typescript(),
-  nodeResolve(),
 ]
 
 const mainConfig = defineConfig({
@@ -55,6 +54,7 @@ const mainConfig = defineConfig({
   },
   plugins: [
     ...shared,
+    nodeResolve(),
     replace({
       include: ['./src/index.ts', './src/node/server/index.ts'],
       values: {
@@ -86,6 +86,9 @@ const assetsConfig = defineConfig({
   },
   plugins: [
     ...shared,
+    nodeResolve({
+      browser: true,
+    }),
     replace({
       preventAssignment: true,
       values: {
