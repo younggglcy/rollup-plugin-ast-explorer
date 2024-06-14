@@ -3,5 +3,7 @@ import { App } from '@/node/ssr/App'
 
 hydrateRoot(
   document,
-  <App assetsMap={window.assetsMap as unknown as typeof import('@/node/ssr/main').assetsMap} />,
+  <App
+    assetsMap={window.assetsMap as unknown as typeof import('@/node/constants').assetsMap}
+  />,
 )

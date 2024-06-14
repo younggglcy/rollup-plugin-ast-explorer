@@ -2,7 +2,7 @@ import { readFile, stat } from 'node:fs/promises'
 import { join } from 'node:path'
 import type { Router } from 'h3'
 import { createRouter as createH3Router, defineEventHandler, serveStatic } from 'h3'
-import { assetsPath } from '../constants'
+import { assetsMap, assetsPath } from '../constants'
 import { generatePipeableStream } from '../ssr/main'
 import { getAllSubPaths } from '../utils'
 
@@ -13,7 +13,11 @@ export async function createRouter() {
   router.get(
     '/',
     defineEventHandler((event) => {
-      return generatePipeableStream()(event.node.res)
+      return generatePipeableStream({
+        props: {
+          assetsMap,
+        },
+      })(event.node.res)
     }),
   )
 
@@ -39,6 +43,11 @@ async function registerAssetsRoutes(router: Router) {
         return {
           size: stats.size,
           mtime: stats.mtimeMs,
+          type: id.endsWith('.js')
+            ? 'application/javascript'
+            : id.endsWith('.css')
+              ? 'text/css'
+              : undefined,
         }
       },
     })
