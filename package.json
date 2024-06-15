@@ -54,7 +54,6 @@
   },
   "dependencies": {
     "@monaco-editor/react": "^4.6.0",
-    "crossws": "^0.2.4",
     "debug": "^4.3.5",
     "detect-port": "^1.6.1",
     "h3": "^1.11.1",
@@ -62,7 +61,7 @@
     "picocolors": "^1.0.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "websocket": "^1.0.35"
+    "rxjs": "^7.8.1"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^2.19.2",
@@ -78,7 +77,6 @@
     "@types/node": "^20.13.0",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
-    "@types/websocket": "^1.0.10",
     "conventional-changelog-cli": "^5.0.0",
     "eslint": "^9.4.0",
     "eslint-plugin-react-hooks": "^4.6.2",

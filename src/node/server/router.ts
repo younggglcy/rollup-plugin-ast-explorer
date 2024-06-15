@@ -1,12 +1,20 @@
 import { readFile, stat } from 'node:fs/promises'
 import { join } from 'node:path'
 import type { Router } from 'h3'
-import { createRouter as createH3Router, defineEventHandler, serveStatic } from 'h3'
+import { createEventStream, createRouter as createH3Router, defineEventHandler, defineLazyEventHandler, serveStatic } from 'h3'
+import type { Subject } from 'rxjs'
 import { assetsMap, assetsPath } from '../constants'
 import { generatePipeableStream } from '../ssr/main'
-import { getAllSubPaths } from '../utils'
+import { getAllSubPaths, mapToString } from '@/utils'
+import type { ModuleInfosMap } from '@/types'
 
-export async function createRouter() {
+export async function createRouter(options: {
+  modulesSource: Subject<ModuleInfosMap>
+}) {
+  const {
+    modulesSource,
+  } = options
+
   const router = createH3Router()
 
   // for ssr
@@ -23,6 +31,39 @@ export async function createRouter() {
 
   // for serve static assets
   await registerAssetsRoutes(router)
+
+  // for sse
+  let modulesCache: string | null = null
+  const modulesSubForCache = modulesSource
+    .subscribe((modules) => {
+      modulesCache = mapToString(modules)
+    })
+
+  router.get(
+    '/stream',
+    defineLazyEventHandler(() => {
+      modulesSubForCache.unsubscribe()
+      return defineEventHandler((event) => {
+        const eventStream = createEventStream(event)
+
+        const modulesSub = modulesSource
+          .subscribe((modules) => {
+            eventStream.push(mapToString(modules))
+          })
+
+        eventStream.onClosed(async () => {
+          modulesSub.unsubscribe()
+          await eventStream.close()
+        })
+
+        if (modulesCache) {
+          eventStream.push(modulesCache)
+          modulesCache = null
+        }
+        return eventStream.send()
+      })
+    }),
+  )
 
   return router
 }
