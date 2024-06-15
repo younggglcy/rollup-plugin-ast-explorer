@@ -95,7 +95,7 @@ async function registerAssetsRoutes(router: Router) {
   })
 
   const assetsPathes = await getAllSubPaths(assetsPath, {
-    allowedExtensions: ['.js', '.css'],
+    allowedExtensions: ['.js', '.css', '.png'],
     relative: true,
   })
 

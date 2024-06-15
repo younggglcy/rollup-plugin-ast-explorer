@@ -14,6 +14,7 @@ export const App: FC<AppProps> = (props) => {
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link href="/favicon.png" rel="icon" type="image/png"></link>
         <link rel="stylesheet" href={assetsMap['/dist/assets/styles/app.css']} />
         <title>rollup-plugin-ast-explorer</title>
       </head>

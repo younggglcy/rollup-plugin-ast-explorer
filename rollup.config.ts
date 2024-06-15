@@ -11,6 +11,7 @@ import replace from '@rollup/plugin-replace'
 import { nodeResolve } from '@rollup/plugin-node-resolve'
 import alias from '@rollup/plugin-alias'
 import json from '@rollup/plugin-json'
+import { copy } from 'fs-extra'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 
@@ -79,6 +80,7 @@ export default defineConfig((_command) => {
   }
 
   const stylesPath = resolve(__dirname, 'src/node/ssr/styles')
+  const publicPath = resolve(__dirname, 'public')
 
   const assetsConfig: RollupOptions = {
     input: [
@@ -118,6 +120,15 @@ export default defineConfig((_command) => {
             fileName: `styles/${file}`,
             source: readFileSync(resolve(stylesPath, file)),
           })))
+        },
+      },
+      {
+        name: 'copy-public-to-assets',
+        buildStart() {
+          this.addWatchFile(publicPath)
+        },
+        buildEnd() {
+          return copy(publicPath, 'dist/assets')
         },
       },
     ],
