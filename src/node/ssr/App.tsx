@@ -1,7 +1,7 @@
 import type { FC } from 'react'
 
 export interface AppProps {
-  assetsMap: typeof import('@/node/ssr/main').assetsMap
+  assetsMap: typeof import('@/node/constants').assetsMap
 }
 
 export const App: FC<AppProps> = (props) => {

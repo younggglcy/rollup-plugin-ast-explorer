@@ -1,10 +1,9 @@
-import { Buffer } from 'node:buffer'
-import type { ModuleInfo, Plugin } from 'rollup'
 import type { AppOptions } from 'h3'
-import type { connection as Connection } from 'websocket'
-import { client as Client } from 'websocket'
-import { logger } from './node/logger'
+import type { Plugin } from 'rollup'
+import { Subject } from 'rxjs'
+import type { ModuleInfosMap } from './types'
 import { createServer } from '@/node/server'
+import { logger } from '@/node/logger'
 import { HOST, PORT } from '@/node/constants'
 
 /**
@@ -39,9 +38,8 @@ export function astExplorer(options?: ASTExplorerOptions): Plugin {
   } = options ?? {}
 
   let server: Awaited<ReturnType<typeof createServer>>
-  let wsClient: Client
-  let wsConnection: Connection
-  const moduleInfosMap = new Map<string, ModuleInfo>()
+  const moduleInfosSubject = new Subject<ModuleInfosMap>()
+  let moduleInfosMap: ModuleInfosMap | null = null
 
   return {
     name: 'rollup-plugin-ast-explorer',
@@ -53,31 +51,14 @@ export function astExplorer(options?: ASTExplorerOptions): Plugin {
       sequential: false,
       handler: async (_options) => {
         if (!server) {
-          server = await createServer(serverOptions)
-        }
-        if (!wsClient) {
-          wsClient = new Client()
-          wsClient.on('connectFailed', (err) => {
-            logger('websocket client connect failed', err)
+          server = await createServer({
+            serverOptions,
+            modulesSource: moduleInfosSubject,
           })
         }
-        return new Promise((resolve) => {
-          wsClient.on('connect', (connection) => {
-            logger('websocket client connected')
-            connection.on('error', (error) => {
-              logger('websocket client connection error', error)
-            })
-            connection.on('close', () => {
-              logger('websocket client connection closed')
-            })
-            connection.on('message', (message) => {
-              logger('websocket client received message', message)
-            })
-            wsConnection = connection
-            resolve()
-          })
-          wsClient.connect(`${server.address()}/_ws`, 'echo-protocol')
-        })
+        if (!moduleInfosMap) {
+          moduleInfosMap = new Map()
+        }
       },
     },
 
@@ -85,7 +66,7 @@ export function astExplorer(options?: ASTExplorerOptions): Plugin {
       order: 'pre',
       sequential: false,
       handler: (info) => {
-        moduleInfosMap.set(info.id, info)
+        moduleInfosMap!.set(info.id, info)
       },
     },
 
@@ -97,7 +78,8 @@ export function astExplorer(options?: ASTExplorerOptions): Plugin {
           logger('Error during build', error)
           // TODO: display on client side
         }
-        wsConnection.send(Buffer.from(JSON.stringify(Array.from(moduleInfosMap.entries()))))
+        moduleInfosSubject.next(moduleInfosMap!)
+        moduleInfosMap = null
       },
     },
   }
