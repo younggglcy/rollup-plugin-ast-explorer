@@ -94,8 +94,6 @@ async function registerAssetsRoutes(router: Router) {
               : id.endsWith('.png')
                 ? 'image/png'
                 : 'application/octet-stream',
-          // TODO: HMR support
-          // etag
         }
       },
     })
