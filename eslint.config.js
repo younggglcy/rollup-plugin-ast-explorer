@@ -13,4 +13,7 @@ export default antfu(
         order: 'asc',
       },
     }],
+    // TODO: throws TypeError: context.getSource is not a function
+    // should enable this rule when it's fixed by update deps
+    'react-hooks/exhaustive-deps': 'off',
   })

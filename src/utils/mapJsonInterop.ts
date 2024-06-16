@@ -28,6 +28,9 @@ export function mapToString(map: Map<string, unknown>) {
 }
 
 export function stringToMap<T extends Map<string, unknown>>(jsonString: string): T {
+  if (!jsonString) {
+    return new Map() as T
+  }
   try {
     const entries = JSON.parse(jsonString)
     const resultMap = new Map() as T

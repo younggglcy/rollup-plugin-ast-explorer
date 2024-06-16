@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react'
 import type { ModuleInfosMap } from '@/types'
 import { stringToMap } from '@/utils'
 
-export function useEventSource(url: string) {
-  const [data, setData] = useState<ModuleInfosMap | null>(null)
+export function useEventSource(url: string, initail: ModuleInfosMap | null = null) {
+  const [data, setData] = useState<ModuleInfosMap | null>(initail)
 
   useEffect(() => {
     const eventSource = typeof window === 'undefined' ? null : new EventSource(url)
