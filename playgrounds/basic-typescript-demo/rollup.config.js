@@ -1,5 +1,5 @@
-import { defineConfig } from 'rollup'
 import typescript from '@rollup/plugin-typescript'
+import { defineConfig } from 'rollup'
 import { astExplorer } from 'rollup-plugin-ast-explorer'
 
 /**

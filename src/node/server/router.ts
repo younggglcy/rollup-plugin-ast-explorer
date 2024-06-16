@@ -5,8 +5,8 @@ import { createEventStream, createRouter as createH3Router, defineEventHandler, 
 import type { Subject } from 'rxjs'
 import { assetsMap, assetsPath } from '../constants'
 import { generatePipeableStream } from '../ssr/main'
-import { getAllSubPaths, mapToString } from '@/utils'
 import type { ModuleInfosMap } from '@/types'
+import { getAllSubPaths, mapToString } from '@/utils'
 
 export async function createRouter(options: {
   modulesSource: Subject<ModuleInfosMap>

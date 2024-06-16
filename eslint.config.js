@@ -7,3 +7,10 @@ export default antfu(
     typescript: true,
   },
 )
+  .overrideRules({
+    'import/order': ['error', {
+      alphabetize: {
+        order: 'asc',
+      },
+    }],
+  })
