@@ -6,7 +6,7 @@ export function render() {
     <App />,
     {
       bootstrapModules: [
-        '/main.js',
+        '/main.css.js',
         '/entry-client.js',
       ],
     },

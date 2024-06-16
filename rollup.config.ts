@@ -83,6 +83,9 @@ export default defineConfig((command) => {
     output: {
       dir: 'dist/assets',
       format: 'esm',
+      entryFileNames(chunkInfo) {
+        return chunkInfo.name === 'main' ? 'main.css.js' : '[name].js'
+      },
     },
     strictDeprecations: true,
     treeshake: {
