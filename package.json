@@ -44,8 +44,8 @@
     "postinstall": "simple-git-hooks",
     "dev": "rimraf dist && rollup -c rollup.config.ts --configPlugin @rollup/plugin-typescript -w",
     "build": "rimraf dist && rollup -c rollup.config.ts --configPlugin @rollup/plugin-typescript",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint": "eslint . --max-warnings 0",
+    "lint:fix": "pnpm lint --fix"
   },
   "peerDependencies": {
     "rollup": "^4.0.0"

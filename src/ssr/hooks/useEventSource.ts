@@ -3,11 +3,10 @@ import type { ModuleInfosMap } from '@/types'
 import { stringToMap } from '@/utils'
 
 export function useEventSource(url: string) {
-  const eventSource = typeof window === 'undefined' ? null : new EventSource(url)
-
   const [data, setData] = useState<ModuleInfosMap | null>(null)
 
   useEffect(() => {
+    const eventSource = typeof window === 'undefined' ? null : new EventSource(url)
     if (!eventSource) {
       return
     }
@@ -19,7 +18,7 @@ export function useEventSource(url: string) {
     return () => {
       eventSource.close()
     }
-  }, [eventSource])
+  }, [url])
 
   return {
     data,
