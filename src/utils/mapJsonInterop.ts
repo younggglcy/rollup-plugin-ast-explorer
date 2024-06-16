@@ -1,4 +1,4 @@
-import { logger as debugLogger } from '@/node/logger'
+import { logger as debugLogger } from '@/logger'
 
 // eslint-disable-next-line no-console
 const logger = typeof window === 'undefined' ? debugLogger : console.log

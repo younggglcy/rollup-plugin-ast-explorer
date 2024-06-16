@@ -3,35 +3,23 @@ import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import alias from '@rollup/plugin-alias'
 import commonjs from '@rollup/plugin-commonjs'
-import json from '@rollup/plugin-json'
 import { nodeResolve } from '@rollup/plugin-node-resolve'
 import replace from '@rollup/plugin-replace'
 import typescript from '@rollup/plugin-typescript'
-import { copy } from 'fs-extra'
+import autoprefixer from 'autoprefixer'
 import type { RollupOptions } from 'rollup'
 import { defineConfig } from 'rollup'
+import copy from 'rollup-plugin-copy'
 import { dts } from 'rollup-plugin-dts'
+import postcss from 'rollup-plugin-postcss'
+import tailwindcss from 'tailwindcss'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
+const pkgJsonPath = resolve(__dirname, 'package.json')
+const { version } = JSON.parse(readFileSync(pkgJsonPath, 'utf-8')) as { version: string }
 
-export default defineConfig((_command) => {
-  const pkgJsonPath = resolve(__dirname, 'package.json')
-
-  const { version } = JSON.parse(readFileSync(pkgJsonPath, 'utf-8')) as { version: string }
-
-  const shared = [
-    json(),
-    commonjs(),
-    alias({
-      entries: [
-        {
-          find: /@\/(.*)/,
-          replacement: `${__dirname}/src/$1`,
-        },
-      ],
-    }),
-    typescript(),
-  ]
+export default defineConfig((command) => {
+  const isProduction = !command.w
 
   const mainConfig: RollupOptions = {
     input: 'src/index.ts',
@@ -54,12 +42,21 @@ export default defineConfig((_command) => {
       moduleSideEffects: false,
     },
     plugins: [
-      ...shared,
+      alias({
+        entries: [
+          {
+            find: /@\/(.*)/,
+            replacement: `${__dirname}/src/$1`,
+          },
+        ],
+      }),
+      commonjs(),
+      typescript(),
       nodeResolve(),
       replace({
-        include: ['./src/index.ts', './src/node/server/index.ts'],
         values: {
-          __ROLLUP_PLUGIN_AST_EXPLORER_VERSION__: JSON.stringify(version),
+          '__ROLLUP_PLUGIN_AST_EXPLORER_VERSION__': JSON.stringify(version),
+          'process.env.NODE_ENV': isProduction ? JSON.stringify('production') : JSON.stringify('development'),
         },
         preventAssignment: true,
       }),
@@ -78,12 +75,10 @@ export default defineConfig((_command) => {
     ],
   }
 
-  const stylesPath = resolve(__dirname, 'src/node/ssr/styles')
-  const publicPath = resolve(__dirname, 'public')
-
   const assetsConfig: RollupOptions = {
     input: [
-      'src/client/bootstrap.tsx',
+      './src/ssr/entry-client.tsx',
+      './src/ssr/main.css',
     ],
     output: {
       dir: 'dist/assets',
@@ -94,42 +89,47 @@ export default defineConfig((_command) => {
       moduleSideEffects: false,
     },
     plugins: [
-      ...shared,
+      alias({
+        entries: [
+          {
+            find: /@\/(.*)/,
+            replacement: `${__dirname}/src/$1`,
+          },
+        ],
+      }),
+      typescript(),
       nodeResolve({
         browser: true,
       }),
+      commonjs(),
       replace({
         preventAssignment: true,
         values: {
-          'process.env.NODE_ENV': JSON.stringify('production'),
+          'process.env.NODE_ENV': isProduction ? JSON.stringify('production') : JSON.stringify('development'),
           // for reduce bundle size manually
           'typeof window': JSON.stringify('object'),
           'typeof document': JSON.stringify('object'),
         },
       }),
-      {
-        name: 'copy-and-watch-css',
-        buildStart() {
-          this.addWatchFile(stylesPath)
-        },
-        async generateBundle() {
-          const dir = await readdir(stylesPath)
-          Promise.all(dir.map(file => this.emitFile({
-            type: 'asset',
-            fileName: `styles/${file}`,
-            source: readFileSync(resolve(stylesPath, file)),
-          })))
-        },
-      },
-      {
-        name: 'copy-public-to-assets',
-        buildStart() {
-          this.addWatchFile(publicPath)
-        },
-        buildEnd() {
-          return copy(publicPath, 'dist/assets')
-        },
-      },
+      copy({
+        targets: [
+          {
+            src: [
+              './public/*',
+            ],
+            dest: 'dist/assets',
+          },
+        ],
+      }),
+      postcss({
+        plugins: [
+          tailwindcss(),
+          autoprefixer(),
+        ],
+        extensions: ['.css'],
+        minimize: isProduction,
+        config: false,
+      }),
     ],
   }
 

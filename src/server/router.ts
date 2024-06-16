@@ -1,10 +1,16 @@
 import { readFile, stat } from 'node:fs/promises'
 import { join } from 'node:path'
 import type { Router } from 'h3'
-import { createEventStream, createRouter as createH3Router, defineEventHandler, defineLazyEventHandler, serveStatic } from 'h3'
+import {
+  createEventStream,
+  createRouter as createH3Router,
+  defineEventHandler,
+  defineLazyEventHandler,
+  serveStatic,
+} from 'h3'
 import type { Subject } from 'rxjs'
-import { assetsMap, assetsPath } from '../constants'
-import { generatePipeableStream } from '../ssr/main'
+import { assetsPath } from '@/constants'
+import { render } from '@/ssr/entry-server'
 import type { ModuleInfosMap } from '@/types'
 import { getAllSubPaths, mapToString } from '@/utils'
 
@@ -21,11 +27,8 @@ export async function createRouter(options: {
   router.get(
     '/',
     defineEventHandler((event) => {
-      return generatePipeableStream({
-        props: {
-          assetsMap,
-        },
-      })(event.node.res)
+      const { pipe } = render()
+      return pipe(event.node.res)
     }),
   )
 
@@ -88,7 +91,11 @@ async function registerAssetsRoutes(router: Router) {
             ? 'application/javascript'
             : id.endsWith('.css')
               ? 'text/css'
-              : undefined,
+              : id.endsWith('.png')
+                ? 'image/png'
+                : 'application/octet-stream',
+          // TODO: HMR support
+          // etag
         }
       },
     })

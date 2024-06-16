@@ -2,9 +2,9 @@ import type { AppOptions } from 'h3'
 import type { Plugin } from 'rollup'
 import { Subject } from 'rxjs'
 import type { ModuleInfosMap } from './types'
-import { HOST, PORT } from '@/node/constants'
-import { logger } from '@/node/logger'
-import { createServer } from '@/node/server'
+import { HOST, PORT } from '@/constants'
+import { logger } from '@/logger'
+import { createServer } from '@/server'
 
 /**
  * Controls the `h3`-based server's behavior
