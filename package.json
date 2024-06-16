@@ -47,6 +47,9 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },
+  "peerDependencies": {
+    "rollup": "^4.0.0"
+  },
   "peerDependenciesMeta": {
     "rollup": {
       "optional": true
