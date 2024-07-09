@@ -39,7 +39,7 @@ export function astExplorer(options?: ASTExplorerOptions): Plugin {
 
   let server: Awaited<ReturnType<typeof createServer>>
   const moduleInfosSubject = new Subject<ModuleInfosMap>()
-  let moduleInfosMap: ModuleInfosMap | null = null
+  const moduleInfosMap: ModuleInfosMap = new Map()
 
   return {
     name: 'rollup-plugin-ast-explorer',
@@ -56,9 +56,6 @@ export function astExplorer(options?: ASTExplorerOptions): Plugin {
             modulesSource: moduleInfosSubject,
           })
         }
-        if (!moduleInfosMap) {
-          moduleInfosMap = new Map()
-        }
       },
     },
 
@@ -66,7 +63,7 @@ export function astExplorer(options?: ASTExplorerOptions): Plugin {
       order: 'pre',
       sequential: false,
       handler: (info) => {
-        moduleInfosMap!.set(info.id, info)
+        moduleInfosMap.set(info.id, info)
       },
     },
 
@@ -79,7 +76,7 @@ export function astExplorer(options?: ASTExplorerOptions): Plugin {
           // TODO: display on client side
         }
         moduleInfosSubject.next(moduleInfosMap!)
-        moduleInfosMap = null
+        moduleInfosMap.clear()
       },
     },
   }
