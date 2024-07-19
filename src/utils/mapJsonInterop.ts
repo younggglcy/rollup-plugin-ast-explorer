@@ -15,6 +15,7 @@ function deserializeValue(serializedValue: string) {
     return JSON.parse(serializedValue)
   }
   catch (error) {
+    logger(`Error deserializeValue ${serializeValue} to JSON string:`, error)
     return serializedValue
   }
 }
