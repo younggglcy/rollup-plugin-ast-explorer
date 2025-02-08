@@ -25,12 +25,6 @@ export default defineConfig((command) => {
     input: 'src/index.ts',
     output: [
       {
-        dir: 'dist/cjs',
-        format: 'cjs',
-        exports: 'named',
-        sourcemap: true,
-      },
-      {
         dir: 'dist/esm',
         format: 'esm',
         sourcemap: true,
