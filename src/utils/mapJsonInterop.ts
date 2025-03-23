@@ -1,7 +1,8 @@
+import { isNodeEnv } from '@/constants'
 import { logger as debugLogger } from '@/logger'
 
 // eslint-disable-next-line no-console
-const logger = typeof window === 'undefined' ? debugLogger : console.log
+const logger = isNodeEnv ? debugLogger : console.log
 
 function serializeValue(value: unknown) {
   if (typeof value === 'object') {

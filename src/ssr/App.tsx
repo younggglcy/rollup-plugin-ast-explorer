@@ -3,20 +3,20 @@ import { fromEvent } from 'rxjs'
 import { Container } from './components/Container'
 import { NoModulesHint } from './components/NoModulesHint'
 import { useEventSource } from './hooks/useEventSource'
-import { MODULES_STOREAGE_KEY } from '@/constants'
+import { MODULES_STOREAGE_KEY, isNodeEnv } from '@/constants'
 import type { ModuleInfosMap } from '@/types'
 import { mapToString, stringToMap } from '@/utils'
 
 export const App: FC = () => {
   const { data } = useEventSource(
     '/stream',
-    typeof window === 'undefined'
+    isNodeEnv
       ? null
       : stringToMap<ModuleInfosMap>(localStorage.getItem(MODULES_STOREAGE_KEY) || ''),
   )
 
   useEffect(() => {
-    if (typeof window === 'undefined') {
+    if (isNodeEnv) {
       return
     }
     const $beforeunload = fromEvent(window, 'beforeunload')

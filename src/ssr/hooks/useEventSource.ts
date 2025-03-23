@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { isNodeEnv } from '@/constants'
 import type { ModuleInfosMap } from '@/types'
 import { stringToMap } from '@/utils'
 
@@ -6,7 +7,7 @@ export function useEventSource(url: string, initail: ModuleInfosMap | null = nul
   const [data, setData] = useState<ModuleInfosMap | null>(initail)
 
   useEffect(() => {
-    const eventSource = typeof window === 'undefined' ? null : new EventSource(url)
+    const eventSource = isNodeEnv ? null : new EventSource(url)
     if (!eventSource) {
       return
     }
