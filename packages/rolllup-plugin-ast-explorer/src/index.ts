@@ -1,10 +1,10 @@
 import type { AppOptions } from 'h3'
 import type { Plugin } from 'rollup'
-import { Subject } from 'rxjs'
 import type { ModuleInfosMap } from './types'
 import { HOST, PORT } from '@/constants'
 import { logger } from '@/logger'
 import { createServer } from '@/server'
+import { BehaviorSubject } from 'rxjs'
 
 /**
  * Controls the `h3`-based server's behavior
@@ -38,8 +38,8 @@ export function astExplorer(options?: ASTExplorerOptions): Plugin {
   } = options ?? {}
 
   let server: Awaited<ReturnType<typeof createServer>>
-  const moduleInfosSubject = new Subject<ModuleInfosMap>()
   const moduleInfosMap: ModuleInfosMap = new Map()
+  const moduleInfosSubject = new BehaviorSubject<ModuleInfosMap>(moduleInfosMap)
 
   return {
     name: 'rollup-plugin-ast-explorer',
@@ -56,6 +56,9 @@ export function astExplorer(options?: ASTExplorerOptions): Plugin {
             modulesSource: moduleInfosSubject,
           })
         }
+        if (moduleInfosMap.size) {
+          moduleInfosMap.clear()
+        }
       },
     },
 
@@ -70,13 +73,11 @@ export function astExplorer(options?: ASTExplorerOptions): Plugin {
     buildEnd: {
       order: 'post',
       sequential: false,
-      handler(error) {
+      handler: (error) => {
         if (error) {
           logger('Error during build', error)
           // TODO: display on client side
         }
-        moduleInfosSubject.next(moduleInfosMap!)
-        moduleInfosMap.clear()
       },
     },
   }

@@ -1,17 +1,17 @@
+import type { ASTExplorerServerOptions } from '@/index'
+import type { ModuleInfosMap } from '@/types'
+import type { BehaviorSubject } from 'rxjs'
 import { createServer as createHttpServer } from 'node:http'
 import detect from 'detect-port'
 import { createApp, toNodeListener } from 'h3'
 import { cyan } from 'picocolors'
-import type { Subject } from 'rxjs'
 import { HOST, PORT } from '../constants'
 import { logger } from '../logger'
 import { createRouter } from './router'
-import type { ASTExplorerServerOptions } from '@/index'
-import type { ModuleInfosMap } from '@/types'
 
 export async function createServer(options: {
   serverOptions: ASTExplorerServerOptions
-  modulesSource: Subject<ModuleInfosMap>
+  modulesSource: BehaviorSubject<ModuleInfosMap>
 }) {
   const {
     serverOptions: {

@@ -1,18 +1,25 @@
-import { type FC, useEffect } from 'react'
+import type { ModuleInfosMap } from '@/types'
+import type { FC } from 'react'
+import { isNodeEnv, MODULES_STOREAGE_KEY } from '@/constants'
+import { mapToString } from '@/utils'
+import { useEffect } from 'react'
 import { fromEvent } from 'rxjs'
 import { Container } from './components/Container'
 import { NoModulesHint } from './components/NoModulesHint'
 import { useEventSource } from './hooks/useEventSource'
-import { MODULES_STOREAGE_KEY, isNodeEnv } from '@/constants'
-import type { ModuleInfosMap } from '@/types'
-import { mapToString, stringToMap } from '@/utils'
 
-export const App: FC = () => {
+interface AppProps {
+  initialModulesInfo: ModuleInfosMap | null
+}
+
+export const App: FC<AppProps> = (props) => {
+  const {
+    initialModulesInfo,
+  } = props
+
   const { data } = useEventSource(
     '/stream',
-    isNodeEnv
-      ? null
-      : stringToMap<ModuleInfosMap>(localStorage.getItem(MODULES_STOREAGE_KEY) || ''),
+    initialModulesInfo,
   )
 
   useEffect(() => {

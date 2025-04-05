@@ -1,6 +1,11 @@
+import type { ModuleInfosMap } from '@/types'
+import type { Router } from 'h3'
+import type { BehaviorSubject } from 'rxjs'
 import { readFile, stat } from 'node:fs/promises'
 import { join } from 'node:path'
-import type { Router } from 'h3'
+import { assetsPath } from '@/constants'
+import { render } from '@/ssr/entry-server'
+import { getAllSubPaths, mapToString } from '@/utils'
 import {
   createEventStream,
   createRouter as createH3Router,
@@ -8,14 +13,9 @@ import {
   defineLazyEventHandler,
   serveStatic,
 } from 'h3'
-import type { Subject } from 'rxjs'
-import { assetsPath } from '@/constants'
-import { render } from '@/ssr/entry-server'
-import type { ModuleInfosMap } from '@/types'
-import { getAllSubPaths, mapToString } from '@/utils'
 
 export async function createRouter(options: {
-  modulesSource: Subject<ModuleInfosMap>
+  modulesSource: BehaviorSubject<ModuleInfosMap>
 }) {
   const {
     modulesSource,
@@ -27,7 +27,9 @@ export async function createRouter(options: {
   router.get(
     '/',
     defineEventHandler((event) => {
-      const { pipe } = render()
+      const { pipe } = render({
+        initialModulesInfo: modulesSource.getValue(),
+      })
       return pipe(event.node.res)
     }),
   )

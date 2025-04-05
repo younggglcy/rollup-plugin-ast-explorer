@@ -3,10 +3,7 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "rimraf dist && DEBUG=rollup-plugin-ast-explorer rollup -c rollup.config.js -w",
-    "build": "rimraf dist && rollup -c rollup.config.js"
-  },
-  "devDependencies": {
-    "rollup-plugin-ast-explorer": "workspace:*"
+    "dev": "DEBUG=rollup-plugin-ast-explorer rollup -c rollup.config.js -w",
+    "build": "rollup -c rollup.config.js"
   }
 }

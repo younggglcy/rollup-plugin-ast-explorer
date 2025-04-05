@@ -1,5 +1,6 @@
+import type { RollupOptions } from 'rollup'
 import { readFileSync } from 'node:fs'
-import { dirname, resolve } from 'node:path'
+import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import alias from '@rollup/plugin-alias'
 import commonjs from '@rollup/plugin-commonjs'
@@ -7,15 +8,14 @@ import { nodeResolve } from '@rollup/plugin-node-resolve'
 import replace from '@rollup/plugin-replace'
 import typescript from '@rollup/plugin-typescript'
 import autoprefixer from 'autoprefixer'
-import type { RollupOptions } from 'rollup'
 import { defineConfig } from 'rollup'
 import copy from 'rollup-plugin-copy'
 import { dts } from 'rollup-plugin-dts'
 import postcss from 'rollup-plugin-postcss'
 import tailwindcss from 'tailwindcss'
 
-const __dirname = dirname(fileURLToPath(import.meta.url))
-const pkgJsonPath = resolve(__dirname, 'package.json')
+const dirname = fileURLToPath(new URL('.', import.meta.url))
+const pkgJsonPath = resolve(dirname, 'package.json')
 const { version } = JSON.parse(readFileSync(pkgJsonPath, 'utf-8')) as { version: string }
 
 export default defineConfig((command) => {
@@ -25,7 +25,7 @@ export default defineConfig((command) => {
     input: 'src/index.ts',
     output: [
       {
-        dir: 'dist/esm',
+        dir: 'dist',
         format: 'esm',
         sourcemap: true,
       },
@@ -40,7 +40,7 @@ export default defineConfig((command) => {
         entries: [
           {
             find: /@\/(.*)/,
-            replacement: `${__dirname}/src/$1`,
+            replacement: `${dirname}/src/$1`,
           },
         ],
       }),
@@ -90,7 +90,7 @@ export default defineConfig((command) => {
         entries: [
           {
             find: /@\/(.*)/,
-            replacement: `${__dirname}/src/$1`,
+            replacement: `${dirname}/src/$1`,
           },
         ],
       }),

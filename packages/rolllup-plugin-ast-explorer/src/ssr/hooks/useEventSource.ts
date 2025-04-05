@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react'
-import { isNodeEnv } from '@/constants'
 import type { ModuleInfosMap } from '@/types'
+import { isNodeEnv } from '@/constants'
 import { stringToMap } from '@/utils'
+import { useEffect, useState } from 'react'
 
 export function useEventSource(url: string, initail: ModuleInfosMap | null = null) {
   const [data, setData] = useState<ModuleInfosMap | null>(initail)

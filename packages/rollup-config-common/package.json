@@ -1,0 +1,28 @@
+{
+  "name": "@rollup-plugin-ast-explorer/rollup-config-common",
+  "type": "module",
+  "private": "true",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/younggglcy/rollup-plugin-ast-explorer.git",
+    "directory": "packages/rollup-config-common"
+  },
+  "bugs": {
+    "url": "https://github.com/younggglcy/rollup-plugin-ast-explorer/issues"
+  },
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "dev": "rollup -c rollup.config.ts --configPlugin @rollup/plugin-typescript -w",
+    "build": "rollup -c rollup.config.ts --configPlugin @rollup/plugin-typescript"
+  },
+  "devDependencies": {
+    "rollup-plugin-ast-explorer": "workspace:*"
+  }
+}

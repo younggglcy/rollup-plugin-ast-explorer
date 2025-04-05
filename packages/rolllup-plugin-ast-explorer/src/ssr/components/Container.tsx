@@ -1,5 +1,5 @@
-import type { FC } from 'react'
 import type { ModuleInfosMap } from '@/types'
+import type { FC } from 'react'
 
 export interface ContainerProps {
   moduleInfos: ModuleInfosMap

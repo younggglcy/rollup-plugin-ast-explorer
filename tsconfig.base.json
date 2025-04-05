@@ -1,12 +1,17 @@
 {
   "compilerOptions": {
     "target": "ESNext",
+    "lib": ["esnext"],
     "module": "ESNext",
+    "moduleResolution": "Bundler",
     "paths": {
-      "rollup-plugin-ast-explorer": ["./src/*", "./dist/*"]
+      "rollup-plugin-ast-explorer": ["./packages/rollup-plugin-ast-explorer/src/index.ts"],
+      "@rollup-plugin-ast-explorer/rollup-config-common": ["./packages/rollup-config-common/src/index.ts"]
     },
     "strict": true,
     "declaration": false,
+    "noEmit": true,
+    "stripInternal": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true
