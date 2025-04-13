@@ -6,7 +6,7 @@ import process from 'node:process'
 import { HOST, PORT } from '@/constants'
 import { logger } from '@/logger'
 import { createServer } from '@/server'
-import { BehaviorSubject, Subject } from 'rxjs'
+import { BehaviorSubject } from 'rxjs'
 
 /**
  * Controls the `h3`-based server's behavior
@@ -38,18 +38,7 @@ export interface ASTExplorerOptions {
   cwd?: string
 }
 
-export interface ASTExplorerPluginAPI {
-  restartServer: (
-    /**
-     * whether to reload the browser page
-     *
-     * @default true
-     */
-    reload?: boolean
-  ) => Promise<void>
-}
-
-export function astExplorer(options?: ASTExplorerOptions): Plugin<ASTExplorerPluginAPI> {
+export function astExplorer(options?: ASTExplorerOptions): Plugin {
   const {
     server: serverOptions = {
       port: PORT,
@@ -61,35 +50,14 @@ export function astExplorer(options?: ASTExplorerOptions): Plugin<ASTExplorerPlu
   let server: Awaited<ReturnType<typeof createServer>>
   const moduleInfosMap: ModuleInfosMap = new Map()
   const moduleInfosSubject = new BehaviorSubject<ModuleInfosMap>(moduleInfosMap)
-  const reloadSubject = new Subject<boolean>()
   const serverContext: ServerContext = {
     moduleInfos: moduleInfosSubject,
-    reload$: reloadSubject,
   }
 
   return {
     name: 'rollup-plugin-ast-explorer',
 
     version: __ROLLUP_PLUGIN_AST_EXPLORER_VERSION__,
-
-    api: {
-      restartServer: async (reload = true) => {
-        logger('Restarting server...')
-        // if (server) {
-        //   server.close()
-        //   server = null!
-        // }
-        // server = await createServer({
-        //   serverOptions,
-        //   context: serverContext,
-        // })
-        logger('Server restarted')
-        if (reload) {
-          logger('Reloading browser...')
-          reloadSubject.next(true)
-        }
-      },
-    },
 
     buildStart: {
       order: 'pre',
