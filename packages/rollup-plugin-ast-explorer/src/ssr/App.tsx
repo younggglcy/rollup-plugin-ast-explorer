@@ -46,7 +46,10 @@ export const App: FC<AppProps> = (props) => {
         <title>rollup-plugin-ast-explorer</title>
       </head>
       <body>
-        <div id="root" className="border-box">
+        <div
+          id="root"
+          className="border-box"
+        >
           {data?.size
             ? <Container moduleInfos={data} />
             : <NoModulesHint />}

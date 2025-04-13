@@ -1,10 +1,12 @@
 import type { AppOptions } from 'h3'
 import type { Plugin } from 'rollup'
-import type { ModuleInfosMap } from './types'
+import type { ModuleInfosMap, ServerContext } from './types'
+import { relative } from 'node:path'
+import process from 'node:process'
 import { HOST, PORT } from '@/constants'
 import { logger } from '@/logger'
 import { createServer } from '@/server'
-import { BehaviorSubject } from 'rxjs'
+import { BehaviorSubject, Subject } from 'rxjs'
 
 /**
  * Controls the `h3`-based server's behavior
@@ -27,24 +29,67 @@ export interface ASTExplorerServerOptions extends Omit<AppOptions, 'websocket'> 
 
 export interface ASTExplorerOptions {
   server?: ASTExplorerServerOptions
+  /**
+   * The current working directory.
+   *
+   * This is used to help the plugin to know the relative path of each module.
+   * @default `process.cwd()`
+   */
+  cwd?: string
 }
 
-export function astExplorer(options?: ASTExplorerOptions): Plugin {
+export interface ASTExplorerPluginAPI {
+  restartServer: (
+    /**
+     * whether to reload the browser page
+     *
+     * @default true
+     */
+    reload?: boolean
+  ) => Promise<void>
+}
+
+export function astExplorer(options?: ASTExplorerOptions): Plugin<ASTExplorerPluginAPI> {
   const {
     server: serverOptions = {
       port: PORT,
       host: HOST,
     },
+    cwd = process.cwd(),
   } = options ?? {}
 
   let server: Awaited<ReturnType<typeof createServer>>
   const moduleInfosMap: ModuleInfosMap = new Map()
   const moduleInfosSubject = new BehaviorSubject<ModuleInfosMap>(moduleInfosMap)
+  const reloadSubject = new Subject<boolean>()
+  const serverContext: ServerContext = {
+    moduleInfos: moduleInfosSubject,
+    reload$: reloadSubject,
+  }
 
   return {
     name: 'rollup-plugin-ast-explorer',
 
     version: __ROLLUP_PLUGIN_AST_EXPLORER_VERSION__,
+
+    api: {
+      restartServer: async (reload = true) => {
+        logger('Restarting server...')
+        // if (server) {
+        //   server.close()
+        //   server = null!
+        // }
+        // server = await createServer({
+        //   serverOptions,
+        //   context: serverContext,
+        // })
+        logger('Server restarted')
+        if (reload) {
+          logger('Reloading browser...')
+          reloadSubject.next(true)
+        }
+      },
+    },
 
     buildStart: {
       order: 'pre',
@@ -53,10 +98,11 @@ export function astExplorer(options?: ASTExplorerOptions): Plugin {
         if (!server) {
           server = await createServer({
             serverOptions,
-            modulesSource: moduleInfosSubject,
+            context: serverContext,
           })
         }
         if (moduleInfosMap.size) {
+          logger('rebuilding..., clearing moduleInfosMap')
           moduleInfosMap.clear()
         }
       },
@@ -66,7 +112,8 @@ export function astExplorer(options?: ASTExplorerOptions): Plugin {
       order: 'pre',
       sequential: false,
       handler: (info) => {
-        moduleInfosMap.set(info.id, info)
+        const path = relative(cwd, info.id)
+        moduleInfosMap.set(path, info)
       },
     },
 

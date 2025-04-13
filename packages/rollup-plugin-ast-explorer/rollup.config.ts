@@ -7,12 +7,12 @@ import commonjs from '@rollup/plugin-commonjs'
 import { nodeResolve } from '@rollup/plugin-node-resolve'
 import replace from '@rollup/plugin-replace'
 import typescript from '@rollup/plugin-typescript'
+import tailwindcss from '@tailwindcss/postcss'
 import autoprefixer from 'autoprefixer'
 import { defineConfig } from 'rollup'
 import copy from 'rollup-plugin-copy'
 import { dts } from 'rollup-plugin-dts'
 import postcss from 'rollup-plugin-postcss'
-import tailwindcss from 'tailwindcss'
 
 const dirname = fileURLToPath(new URL('.', import.meta.url))
 const pkgJsonPath = resolve(dirname, 'package.json')

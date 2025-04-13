@@ -1,12 +1,15 @@
 {
   "compilerOptions": {
     "target": "ESNext",
-    "lib": ["esnext"],
+    "jsx": "react-jsx",
+    "lib": ["ESNext", "DOM"],
+    "rootDir": "./",
     "module": "ESNext",
     "moduleResolution": "Bundler",
     "paths": {
       "rollup-plugin-ast-explorer": ["./packages/rollup-plugin-ast-explorer/src/index.ts"],
-      "@rollup-plugin-ast-explorer/rollup-config-common": ["./packages/rollup-config-common/src/index.ts"]
+      "@rollup-plugin-ast-explorer/rollup-config-common": ["./packages/rollup-config-common/src/index.ts"],
+      "@/*": ["./packages/rollup-plugin-ast-explorer/src/*"]
     },
     "strict": true,
     "declaration": false,
@@ -16,6 +19,11 @@
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true
   },
+  "include": [
+    "packages/**/*",
+    "playgrounds/**/*",
+    "./*.ts"
+  ],
   "exclude": ["dist", "node_modules"],
   "$schema": "https://json.schemastore.org/tsconfig"
 }

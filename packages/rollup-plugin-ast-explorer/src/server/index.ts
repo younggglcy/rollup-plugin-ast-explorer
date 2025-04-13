@@ -1,6 +1,5 @@
 import type { ASTExplorerServerOptions } from '@/index'
-import type { ModuleInfosMap } from '@/types'
-import type { BehaviorSubject } from 'rxjs'
+import type { ServerContext } from '@/types'
 import { createServer as createHttpServer } from 'node:http'
 import detect from 'detect-port'
 import { createApp, toNodeListener } from 'h3'
@@ -11,7 +10,7 @@ import { createRouter } from './router'
 
 export async function createServer(options: {
   serverOptions: ASTExplorerServerOptions
-  modulesSource: BehaviorSubject<ModuleInfosMap>
+  context: ServerContext
 }) {
   const {
     serverOptions: {
@@ -19,7 +18,7 @@ export async function createServer(options: {
       port: _port = PORT,
       ...h3AppOptions
     },
-    modulesSource,
+    context,
   } = options
 
   const port = await detect({
@@ -30,7 +29,7 @@ export async function createServer(options: {
 
   const app = createApp(h3AppOptions)
   const router = await createRouter({
-    modulesSource,
+    context,
   })
   app
     .use(router)
@@ -41,8 +40,6 @@ export async function createServer(options: {
       // eslint-disable-next-line no-console
       console.log(cyan(`rollup-plugin-ast-explorer-v${__ROLLUP_PLUGIN_AST_EXPLORER_VERSION__}: visit ${address} to explore the rollup's AST`))
     })
-
-  server.address = () => address
 
   return server
 }
