@@ -13,6 +13,9 @@ export function useEventSource(url: string, initail: ModuleInfosMap | null = nul
     }
 
     eventSource.onmessage = (event) => {
+      if (event.data === '[]') {
+        return
+      }
       setData(stringToMap<ModuleInfosMap>(event.data))
     }
 
