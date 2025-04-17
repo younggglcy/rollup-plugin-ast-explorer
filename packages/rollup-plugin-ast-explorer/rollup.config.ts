@@ -80,6 +80,7 @@ export default defineConfig((command) => {
       entryFileNames(chunkInfo) {
         return chunkInfo.name === 'main' ? 'main.css.js' : '[name].js'
       },
+      sourcemap: 'inline',
     },
     strictDeprecations: true,
     treeshake: {
