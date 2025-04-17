@@ -32,7 +32,7 @@ export async function createRouter(options: {
   })
 
   for (const path of assetsPathes) {
-    router.get(`/${path}`, assetsHandler(path))
+    router.get(`/${path}`, assetsHandler(assetsPath))
   }
 
   // for sse
