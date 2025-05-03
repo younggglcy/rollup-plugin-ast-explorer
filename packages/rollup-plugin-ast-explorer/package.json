@@ -54,17 +54,17 @@
     "@monaco-editor/react": "^4.7.0",
     "debug": "^4.4.0",
     "detect-port": "^2.1.0",
-    "h3": "^1.15.1",
+    "h3": "^1.15.3",
     "picocolors": "^1.1.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "rxjs": "^7.8.2"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4.1.4",
+    "@tailwindcss/postcss": "^4.1.5",
     "autoprefixer": "^10.4.21",
     "postcss": "^8.5.3",
-    "tailwindcss": "^4.1.4",
+    "tailwindcss": "^4.1.5",
     "typescript": "^5.8.3"
   },
   "simple-git-hooks": {
