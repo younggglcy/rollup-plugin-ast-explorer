@@ -2,7 +2,7 @@
   "name": "@rollup-plugin-ast-explorer/workspace",
   "type": "module",
   "private": "true",
-  "packageManager": "pnpm@10.12.4",
+  "packageManager": "pnpm@10.13.1",
   "author": {
     "name": "younggglcy",
     "email": "younggglcy@gmail.com"
@@ -43,7 +43,7 @@
     "@rollup/plugin-typescript": "^12.1.4",
     "@types/debug": "^4.1.12",
     "@types/fs-extra": "^11.0.4",
-    "@types/node": "^22.16.0",
+    "@types/node": "^22.16.2",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
     "bumpp": "^10.2.0",
@@ -54,7 +54,7 @@
     "fast-glob": "^3.3.3",
     "fs-extra": "^11.3.0",
     "lint-staged": "^15.5.2",
-    "rollup": "^4.44.1",
+    "rollup": "^4.44.2",
     "rollup-plugin-ast-explorer": "workspace:*",
     "rollup-plugin-copy": "^3.5.0",
     "rollup-plugin-dts": "^6.2.1",
