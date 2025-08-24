@@ -79,7 +79,7 @@ importers:
         specifier: ^15.5.2
         version: 15.5.2
       rollup:
-        specifier: ^4.46.4
+        specifier: ^4.47.1
         version: 4.48.0
       rollup-plugin-ast-explorer:
         specifier: workspace:*
