@@ -2,7 +2,7 @@ import type { Node } from 'estree'
 import { useEffect, useState } from 'react'
 import { ASTViewer } from './components/ASTViewer'
 import { CodeViewer } from './components/CodeViewer'
-import { ModuleList } from './components/ModuleList'
+import { Toolbar } from './components/Toolbar'
 import { useModules } from './hooks/useModules'
 import { fetchAST } from './lib/api'
 
@@ -40,19 +40,18 @@ function App() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="text-lg">Loading modules...</div>
+      <div className="flex items-center justify-center h-screen bg-gray-50">
+        <div className="text-lg text-gray-600">Loading modules...</div>
       </div>
     )
   }
 
   if (error) {
     return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="text-red-600">
-          Error:
-          {' '}
-          {error}
+      <div className="flex items-center justify-center h-screen bg-gray-50">
+        <div className="text-red-600 text-center">
+          <div className="text-xl font-semibold mb-2">Error</div>
+          <div>{error}</div>
         </div>
       </div>
     )
@@ -60,9 +59,9 @@ function App() {
 
   if (modules.length === 0) {
     return (
-      <div className="flex items-center justify-center h-screen">
+      <div className="flex items-center justify-center h-screen bg-gray-50">
         <div className="text-center">
-          <h2 className="text-xl font-semibold mb-2">No modules found</h2>
+          <h2 className="text-xl font-semibold mb-2 text-gray-700">No modules found</h2>
           <p className="text-gray-500">
             Make sure the Rollup plugin is running and has parsed some modules.
           </p>
@@ -72,42 +71,21 @@ function App() {
   }
 
   return (
-    <div className="h-screen flex flex-col">
-      <header className="bg-gray-900 text-white px-6 py-4 border-b">
-        <h1 className="text-xl font-bold">Rollup AST Explorer</h1>
-      </header>
+    <div className="h-screen flex flex-col bg-white">
+      <Toolbar
+        modules={modules}
+        selectedModuleId={selectedModuleId}
+        onSelectModule={setSelectedModuleId}
+      />
       <div className="flex-1 flex overflow-hidden">
-        <div className="w-80">
-          <ModuleList
-            modules={modules}
-            selectedModuleId={selectedModuleId}
-            onSelectModule={setSelectedModuleId}
+        <div className="flex-1 border-r border-gray-200">
+          <CodeViewer
+            code={code}
+            highlightedNode={selectedNode}
           />
         </div>
-        <div className="flex-1 flex">
-          <div className="flex-1 border-r">
-            <div className="h-full flex flex-col">
-              <div className="px-4 py-2 border-b bg-gray-50">
-                <h3 className="font-semibold">AST Tree</h3>
-              </div>
-              <div className="flex-1 overflow-hidden">
-                <ASTViewer ast={ast} onNodeClick={setSelectedNode} />
-              </div>
-            </div>
-          </div>
-          <div className="flex-1">
-            <div className="h-full flex flex-col">
-              <div className="px-4 py-2 border-b bg-gray-50">
-                <h3 className="font-semibold">Source Code</h3>
-              </div>
-              <div className="flex-1 overflow-hidden">
-                <CodeViewer
-                  code={code}
-                  highlightedNode={selectedNode}
-                />
-              </div>
-            </div>
-          </div>
+        <div className="flex-1">
+          <ASTViewer ast={ast} onNodeClick={setSelectedNode} />
         </div>
       </div>
     </div>

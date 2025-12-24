@@ -32,21 +32,24 @@ export function CodeViewer({ code, language = 'javascript', highlightedNode }: C
 
   if (!code) {
     return (
-      <div className="flex items-center justify-center h-full text-gray-500">
-        No code available
+      <div className="flex items-center justify-center h-full text-gray-400 bg-gray-50">
+        <div className="text-center">
+          <div className="text-lg mb-2">No code available</div>
+          <div className="text-sm">Select a module to view its source</div>
+        </div>
       </div>
     )
   }
 
   return (
-    <ScrollArea className="h-full">
+    <ScrollArea className="h-full bg-gray-50">
       <Highlight
         theme={themes.github}
         code={code}
         language={language}
       >
         {({ className, style, tokens, getLineProps, getTokenProps }) => (
-          <pre className={className} style={{ ...style, padding: '1rem', margin: 0 }}>
+          <pre className={className} style={{ ...style, padding: '1rem', margin: 0, background: '#f9fafb', fontSize: '13px', lineHeight: '1.5' }}>
             {tokens.map((line, lineIdx) => {
               const lineNumber = lineIdx + 1
               const isHighlighted = highlightedLine === lineNumber
@@ -71,14 +74,15 @@ export function CodeViewer({ code, language = 'javascript', highlightedNode }: C
                       display: 'inline-block',
                       width: '3em',
                       userSelect: 'none',
-                      opacity: 0.5,
+                      opacity: 0.4,
                       textAlign: 'right',
                       paddingRight: '1em',
+                      color: '#6b7280',
                     }}
                   >
                     {lineNumber}
                   </span>
-                  <span>
+                  <span style={{ fontFamily: 'Monaco, Menlo, "Ubuntu Mono", Consolas, monospace' }}>
                     {line.map((token, tokenIdx) => (
                       <span key={`token-${tokenIdx}`} {...getTokenProps({ token })} />
                     ))}

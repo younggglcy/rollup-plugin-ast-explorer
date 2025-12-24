@@ -1,7 +1,6 @@
 import type { Node } from 'estree'
 import { ChevronDown, ChevronRight } from 'lucide-react'
 import { useState } from 'react'
-import { cn } from '@/lib/utils'
 import { ScrollArea } from './ui/scroll-area'
 
 interface ASTViewerProps {
@@ -13,14 +12,15 @@ interface TreeNodeProps {
   node: any
   depth: number
   onNodeClick?: (node: Node) => void
+  path?: string
 }
 
-function TreeNode({ node, depth, onNodeClick }: TreeNodeProps) {
+function TreeNode({ node, depth, onNodeClick, path = '' }: TreeNodeProps) {
   const [expanded, setExpanded] = useState(depth < 2)
 
   if (!node || typeof node !== 'object') {
     return (
-      <div className="text-sm text-gray-500 ml-4">
+      <div className="text-xs text-gray-600 font-mono">
         {JSON.stringify(node)}
       </div>
     )
@@ -37,50 +37,58 @@ function TreeNode({ node, depth, onNodeClick }: TreeNodeProps) {
   })
 
   const nodeType = node.type || 'Unknown'
+  const currentPath = path ? `${path}.${nodeType}` : nodeType
 
   return (
-    <div className="text-sm">
-      <button
-        type="button"
-        onClick={() => {
+    <div className="text-xs font-mono">
+      <div
+        className="flex items-start hover:bg-blue-50 cursor-pointer py-0.5"
+        style={{ paddingLeft: `${depth * 12}px` }}
+        onClick={(e) => {
+          e.stopPropagation()
           setExpanded(!expanded)
           if (onNodeClick && node.type) {
             onNodeClick(node)
           }
         }}
-        className={cn(
-          'flex items-center gap-1 hover:bg-gray-100 px-2 py-1 rounded w-full text-left transition-colors',
-          onNodeClick && 'cursor-pointer',
-        )}
-        style={{ paddingLeft: `${depth * 12 + 8}px` }}
       >
-        {hasChildren && (
-          <span className="text-gray-400">
-            {expanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
-          </span>
-        )}
-        {!hasChildren && <span className="w-3.5" />}
-        <span className="font-medium text-blue-600">{nodeType}</span>
+        <span className="text-gray-400 mr-1 flex-shrink-0 w-3">
+          {hasChildren && (
+            expanded ? <ChevronDown size={12} /> : <ChevronRight size={12} />
+          )}
+        </span>
+        <span className="text-blue-600 font-medium">{nodeType}</span>
         {node.name && (
-          <span className="text-gray-600 ml-1">
-            (
+          <span className="text-purple-600 ml-1">
+            {' '}
+            &quot;
             {node.name}
-            )
+            &quot;
           </span>
         )}
         {node.operator && (
-          <span className="text-purple-600 ml-1">
+          <span className="text-green-600 ml-1">
+            {' '}
             {node.operator}
           </span>
         )}
         {node.value !== undefined && typeof node.value !== 'object' && (
-          <span className="text-green-600 ml-1">
+          <span className="text-orange-600 ml-1">
+            {' '}
             =
             {' '}
             {JSON.stringify(node.value)}
           </span>
         )}
-      </button>
+        {node.kind && (
+          <span className="text-gray-500 ml-1">
+            {' '}
+            (
+            {node.kind}
+            )
+          </span>
+        )}
+      </div>
 
       {expanded && (
         <div>
@@ -91,21 +99,27 @@ function TreeNode({ node, depth, onNodeClick }: TreeNodeProps) {
             const value = node[key]
 
             if (Array.isArray(value)) {
+              if (value.length === 0)
+                return null
               return (
                 <div key={key}>
                   <div
-                    className="text-gray-500 text-xs ml-4"
-                    style={{ paddingLeft: `${depth * 12 + 8}px` }}
+                    className="text-gray-500 text-xs font-mono"
+                    style={{ paddingLeft: `${(depth + 1) * 12}px` }}
                   >
                     {key}
-                    :
+                    {' '}
+                    [
+                    {value.length}
+                    ]
                   </div>
                   {value.map((item, idx) => (
                     <TreeNode
-                      key={`${key}-${idx}`}
+                      key={`${currentPath}.${key}[${idx}]`}
                       node={item}
-                      depth={depth + 1}
+                      depth={depth + 2}
                       onNodeClick={onNodeClick}
+                      path={`${currentPath}.${key}[${idx}]`}
                     />
                   ))}
                 </div>
@@ -116,17 +130,32 @@ function TreeNode({ node, depth, onNodeClick }: TreeNodeProps) {
               return (
                 <div key={key}>
                   <div
-                    className="text-gray-500 text-xs ml-4"
-                    style={{ paddingLeft: `${depth * 12 + 8}px` }}
+                    className="text-gray-500 text-xs font-mono"
+                    style={{ paddingLeft: `${(depth + 1) * 12}px` }}
                   >
                     {key}
-                    :
                   </div>
                   <TreeNode
                     node={value}
-                    depth={depth + 1}
+                    depth={depth + 2}
                     onNodeClick={onNodeClick}
+                    path={`${currentPath}.${key}`}
                   />
+                </div>
+              )
+            }
+
+            if (value !== undefined && value !== null) {
+              return (
+                <div
+                  key={key}
+                  className="text-gray-600 text-xs font-mono"
+                  style={{ paddingLeft: `${(depth + 1) * 12}px` }}
+                >
+                  {key}
+                  :
+                  {' '}
+                  {typeof value === 'string' ? `"${value}"` : String(value)}
                 </div>
               )
             }
@@ -142,15 +171,18 @@ function TreeNode({ node, depth, onNodeClick }: TreeNodeProps) {
 export function ASTViewer({ ast, onNodeClick }: ASTViewerProps) {
   if (!ast) {
     return (
-      <div className="flex items-center justify-center h-full text-gray-500">
-        No AST available
+      <div className="flex items-center justify-center h-full text-gray-400">
+        <div className="text-center">
+          <div className="text-lg mb-2">No AST available</div>
+          <div className="text-sm">Select a module to view its AST</div>
+        </div>
       </div>
     )
   }
 
   return (
-    <ScrollArea className="h-full">
-      <div className="p-4">
+    <ScrollArea className="h-full bg-white">
+      <div className="p-3">
         <TreeNode node={ast} depth={0} onNodeClick={onNodeClick} />
       </div>
     </ScrollArea>
