@@ -6,11 +6,13 @@ import { createServer as createHttpServer } from 'node:http'
 import { EventType } from '@rollup-plugin-ast-explorer/shared'
 import detect from 'detect-port'
 import { createApp, createRouter, defineEventHandler, getRouterParam, toNodeListener } from 'h3'
-import { cyan } from 'picocolors'
+import picocolors from 'picocolors'
 import { WebSocketServer } from 'ws'
 import { DEFAULT_HOST, DEFAULT_PORT } from './constants'
 import { logger } from './logger'
 import { sanitizeAST } from './utils'
+
+const { cyan } = picocolors
 
 export interface ServerOptions {
   port?: number
@@ -68,15 +70,18 @@ export async function createServer(options: ServerOptions, context: ServerContex
       throw new Error('Module ID is required')
     }
 
-    const info = context.modules.get(id)
+    // Decode the URL-encoded ID
+    const decodedId = decodeURIComponent(id)
+
+    const info = context.modules.get(decodedId)
     if (!info) {
-      throw new Error(`Module not found: ${id}`)
+      throw new Error(`Module not found: ${decodedId}`)
     }
 
     const sanitized = sanitizeAST(info.ast)
 
     return {
-      id,
+      id: decodedId,
       ast: sanitized,
       code: context.keepCode ? (info.code ?? undefined) : undefined,
     }
