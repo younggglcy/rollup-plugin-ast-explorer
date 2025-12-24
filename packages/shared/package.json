@@ -1,0 +1,23 @@
+{
+  "name": "@rollup-plugin-ast-explorer/shared",
+  "type": "module",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Shared types and utilities for Rollup AST Explorer",
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/types/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "dev": "rollup -c rollup.config.ts --configPlugin @rollup/plugin-typescript -w",
+    "build": "rollup -c rollup.config.ts --configPlugin @rollup/plugin-typescript"
+  }
+}
