@@ -5,7 +5,7 @@ import type { WebSocket } from 'ws'
 import { createServer as createHttpServer } from 'node:http'
 import { EventType } from '@rollup-plugin-ast-explorer/shared'
 import detect from 'detect-port'
-import { createApp, createRouter, defineEventHandler, getRouterParam, toNodeListener } from 'h3'
+import { createApp, createRouter, defineEventHandler, getRouterParam, setResponseHeaders, toNodeListener } from 'h3'
 import picocolors from 'picocolors'
 import { WebSocketServer } from 'ws'
 import { DEFAULT_HOST, DEFAULT_PORT } from './constants'
@@ -41,8 +41,26 @@ export async function createServer(options: ServerOptions, context: ServerContex
   }
 
   const address = `http://${host}:${port}`
-  const app = createApp()
+  const app = createApp({
+    onError: (error) => {
+      console.error('Server error:', error)
+    },
+  })
   const router = createRouter()
+
+  // Add CORS middleware
+  app.use(defineEventHandler((event) => {
+    setResponseHeaders(event, {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type',
+    })
+
+    // Handle preflight requests
+    if (event.method === 'OPTIONS') {
+      return ''
+    }
+  }))
 
   // GET /modules - returns list of all parsed modules
   router.get('/modules', defineEventHandler((): ModulesResponse => {
