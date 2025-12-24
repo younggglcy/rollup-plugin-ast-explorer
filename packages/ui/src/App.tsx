@@ -77,8 +77,8 @@ function App() {
         selectedModuleId={selectedModuleId}
         onSelectModule={setSelectedModuleId}
       />
-      <div className="flex-1 flex overflow-hidden">
-        <div className="flex-1 border-r border-gray-200">
+      <div className="flex-1 flex flex-col overflow-hidden">
+        <div className="flex-1 border-b border-gray-200">
           <CodeViewer
             code={code}
             highlightedNode={selectedNode}
