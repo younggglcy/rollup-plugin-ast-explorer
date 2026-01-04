@@ -1,9 +1,9 @@
 import type { ServerContext } from '@/types'
-import { assetsPath } from '@/constants'
-import { getAllSubPaths } from '@/utils'
 import {
   createRouter as createH3Router,
 } from 'h3'
+import { assetsPath } from '@/constants'
+import { getAllSubPaths } from '@/utils'
 import { assetsHandler } from './handlers/assets-handler'
 import { ssrHandler } from './handlers/ssr-handler'
 import { streamSSEHandler } from './handlers/stream-sse-handler'
@@ -22,7 +22,7 @@ export async function createRouter(options: {
   // for ssr
   router.get(
     '/',
-    ssrHandler(moduleInfos),
+    ssrHandler(),
   )
 
   // for serve static assets
