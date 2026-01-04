@@ -1,5 +1,5 @@
 import type { FC, ReactNode } from 'react'
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { cn } from '@/ssr/lib/utils'
 
@@ -9,25 +9,27 @@ export interface ResizablePanelLayoutProps {
   rightPanel: ReactNode
   leftDefaultWidth?: number
   rightDefaultWidth?: number
+  onResizeStateChange?: (isResized: boolean) => void
+  resetTrigger?: number
 }
 
 interface ResizeHandleProps {
-  onResize: (delta: number) => void
+  onDrag: (deltaX: number) => void
 }
 
-const ResizeHandle: FC<ResizeHandleProps> = ({ onResize }) => {
-  const handleRef = useRef<HTMLDivElement>(null)
+const ResizeHandle: FC<ResizeHandleProps> = ({ onDrag }) => {
   const [isDragging, setIsDragging] = useState(false)
+  const lastXRef = useRef(0)
 
   const handleMouseDown = useCallback((e: React.MouseEvent) => {
     e.preventDefault()
     setIsDragging(true)
-
-    const startX = e.clientX
+    lastXRef.current = e.clientX
 
     const handleMouseMove = (moveEvent: MouseEvent) => {
-      const delta = moveEvent.clientX - startX
-      onResize(delta)
+      const deltaX = moveEvent.clientX - lastXRef.current
+      lastXRef.current = moveEvent.clientX
+      onDrag(deltaX)
     }
 
     const handleMouseUp = () => {
@@ -38,13 +40,12 @@ const ResizeHandle: FC<ResizeHandleProps> = ({ onResize }) => {
 
     document.addEventListener('mousemove', handleMouseMove)
     document.addEventListener('mouseup', handleMouseUp)
-  }, [onResize])
+  }, [onDrag])
 
   return (
     <div
-      ref={handleRef}
       className={cn(
-        'w-1 cursor-col-resize bg-neutral-200 dark:bg-neutral-800 hover:bg-blue-500 transition-colors flex-shrink-0',
+        'w-1.5 cursor-col-resize bg-neutral-200 dark:bg-neutral-700 hover:bg-blue-500 dark:hover:bg-blue-500 transition-colors flex-shrink-0',
         isDragging && 'bg-blue-500',
       )}
       onMouseDown={handleMouseDown}
@@ -58,21 +59,38 @@ export const ResizablePanelLayout: FC<ResizablePanelLayoutProps> = ({
   rightPanel,
   leftDefaultWidth = 200,
   rightDefaultWidth = 400,
+  onResizeStateChange,
+  resetTrigger,
 }) => {
   const [leftWidth, setLeftWidth] = useState(leftDefaultWidth)
   const [rightWidth, setRightWidth] = useState(rightDefaultWidth)
-  const containerRef = useRef<HTMLDivElement>(null)
 
-  const handleLeftResize = useCallback((delta: number) => {
-    setLeftWidth(prev => Math.max(100, Math.min(prev + delta, 400)))
+  // Track if panels have been resized
+  const isResized = leftWidth !== leftDefaultWidth || rightWidth !== rightDefaultWidth
+
+  // Notify parent when resize state changes
+  useEffect(() => {
+    onResizeStateChange?.(isResized)
+  }, [isResized, onResizeStateChange])
+
+  // Reset panels when resetTrigger changes
+  useEffect(() => {
+    if (resetTrigger && resetTrigger > 0) {
+      setLeftWidth(leftDefaultWidth)
+      setRightWidth(rightDefaultWidth)
+    }
+  }, [resetTrigger, leftDefaultWidth, rightDefaultWidth])
+
+  const handleLeftDrag = useCallback((deltaX: number) => {
+    setLeftWidth(prev => Math.max(100, Math.min(prev + deltaX, 400)))
   }, [])
 
-  const handleRightResize = useCallback((delta: number) => {
-    setRightWidth(prev => Math.max(200, Math.min(prev - delta, 800)))
+  const handleRightDrag = useCallback((deltaX: number) => {
+    setRightWidth(prev => Math.max(200, Math.min(prev - deltaX, 800)))
   }, [])
 
   return (
-    <div ref={containerRef} className="flex h-full overflow-hidden">
+    <div className="flex h-full overflow-hidden">
       {/* Left Panel - File List */}
       <div
         className="flex-shrink-0 overflow-hidden bg-white dark:bg-neutral-950 border-r border-neutral-200 dark:border-neutral-800"
@@ -81,14 +99,14 @@ export const ResizablePanelLayout: FC<ResizablePanelLayoutProps> = ({
         {leftPanel}
       </div>
 
-      <ResizeHandle onResize={handleLeftResize} />
+      <ResizeHandle onDrag={handleLeftDrag} />
 
       {/* Center Panel - Code Viewer */}
       <div className="flex-1 min-w-0 overflow-hidden bg-white dark:bg-neutral-950">
         {centerPanel}
       </div>
 
-      <ResizeHandle onResize={handleRightResize} />
+      <ResizeHandle onDrag={handleRightDrag} />
 
       {/* Right Panel - AST Viewer */}
       <div

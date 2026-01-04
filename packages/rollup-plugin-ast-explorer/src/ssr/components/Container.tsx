@@ -18,6 +18,10 @@ export const Container: FC<ContainerProps> = ({ moduleInfos }) => {
   const fileList = useMemo(() => Array.from(moduleInfos.keys()), [moduleInfos])
   const [selectedFileId, setSelectedFileId] = useState(fileList[0] || null)
 
+  // Panel resize state
+  const [isPanelResized, setIsPanelResized] = useState(false)
+  const [resetTrigger, setResetTrigger] = useState(0)
+
   // Current module
   const currentModule = selectedFileId ? moduleInfos.get(selectedFileId) : null
   const code = currentModule?.code || ''
@@ -135,6 +139,10 @@ export const Container: FC<ContainerProps> = ({ moduleInfos }) => {
     setExpandedPaths(new Set(paths))
   }, [])
 
+  const handleResetPanels = useCallback(() => {
+    setResetTrigger(prev => prev + 1)
+  }, [])
+
   // Detect language from file extension
   const language = useMemo(() => {
     if (!selectedFileId)
@@ -150,7 +158,7 @@ export const Container: FC<ContainerProps> = ({ moduleInfos }) => {
 
   return (
     <div className="flex flex-col h-full">
-      <Header />
+      <Header showReset={isPanelResized} onReset={handleResetPanels} />
       <div className="flex-1 overflow-hidden">
         <ResizablePanelLayout
           leftPanel={(
@@ -185,6 +193,8 @@ export const Container: FC<ContainerProps> = ({ moduleInfos }) => {
               onExpandAll={handleExpandAll}
             />
           )}
+          onResizeStateChange={setIsPanelResized}
+          resetTrigger={resetTrigger}
         />
       </div>
     </div>
