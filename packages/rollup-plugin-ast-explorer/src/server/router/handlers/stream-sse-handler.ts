@@ -1,7 +1,7 @@
-import type { ModuleInfosMap } from '@/types'
 import type { BehaviorSubject } from 'rxjs'
-import { mapToString } from '@/utils'
+import type { ModuleInfosMap } from '@/types'
 import { createEventStream, defineEventHandler, defineLazyEventHandler } from 'h3'
+import { mapToString } from '@/utils'
 
 export function streamSSEHandler(moduleInfos: BehaviorSubject<ModuleInfosMap>) {
   let modulesCache: string | null = null

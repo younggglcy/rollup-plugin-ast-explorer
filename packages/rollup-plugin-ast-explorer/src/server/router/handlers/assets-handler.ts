@@ -1,7 +1,7 @@
 import { readFile, stat } from 'node:fs/promises'
 import { join } from 'node:path'
-import { logger } from '@/logger'
 import { defineEventHandler, serveStatic } from 'h3'
+import { logger } from '@/logger'
 
 export function assetsHandler(assetsPath: string) {
   return defineEventHandler((event) => {

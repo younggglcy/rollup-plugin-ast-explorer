@@ -3,10 +3,10 @@ import type { Plugin } from 'rollup'
 import type { ModuleInfosMap, ServerContext } from './types'
 import { relative } from 'node:path'
 import process from 'node:process'
+import { BehaviorSubject } from 'rxjs'
 import { HOST, PORT } from '@/constants'
 import { logger } from '@/logger'
 import { createServer } from '@/server'
-import { BehaviorSubject } from 'rxjs'
 
 /**
  * Controls the `h3`-based server's behavior
