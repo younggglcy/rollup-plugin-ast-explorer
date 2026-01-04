@@ -7,3 +7,58 @@ body,
   margin: 0;
   padding: 0;
 }
+
+/* AST highlight styles */
+.ast-highlight-line {
+  background-color: rgba(255, 213, 0, 0.3);
+}
+
+.ast-highlight-inline {
+  background-color: rgba(255, 213, 0, 0.5);
+  border-bottom: 2px solid #ffd500;
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+  .ast-highlight-line {
+    background-color: rgba(255, 213, 0, 0.2);
+  }
+
+  .ast-highlight-inline {
+    background-color: rgba(255, 213, 0, 0.3);
+  }
+}
+
+/* AST Node styles */
+.ast-node {
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+@media (prefers-color-scheme: dark) {
+  ::-webkit-scrollbar-thumb {
+    background: #4b5563;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #6b7280;
+  }
+}
