@@ -19,8 +19,9 @@ export const FileItem: FC<FileItemProps> = ({ path, isActive, onClick }) => {
       onClick={onClick}
       className={cn(
         'w-full flex items-center gap-2 px-3 py-1.5 text-left text-sm transition-colors',
+        'text-neutral-700 dark:text-neutral-200',
         'hover:bg-neutral-100 dark:hover:bg-neutral-800',
-        isActive && 'bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-300',
+        isActive && 'bg-blue-50 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300',
       )}
       title={path}
     >

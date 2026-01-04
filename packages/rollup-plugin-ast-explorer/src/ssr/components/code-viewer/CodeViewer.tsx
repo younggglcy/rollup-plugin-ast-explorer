@@ -3,6 +3,7 @@ import type { FC } from 'react'
 import type { HighlightRange } from '@/ssr/types/ast'
 import { lazy, Suspense, useCallback, useState } from 'react'
 
+import { useTheme } from '@/ssr/hooks/useTheme'
 import { useHighlight } from './useHighlight'
 
 // Lazy load Monaco Editor
@@ -16,7 +17,7 @@ export interface CodeViewerProps {
 
 const CodeFallback: FC<{ code: string }> = ({ code }) => (
   <div className="h-full w-full bg-neutral-50 dark:bg-neutral-900">
-    <pre className="h-full overflow-auto p-4 font-mono text-sm">
+    <pre className="h-full overflow-auto p-4 font-mono text-sm text-neutral-800 dark:text-neutral-200">
       <code>{code}</code>
     </pre>
   </div>
@@ -28,8 +29,11 @@ export const CodeViewer: FC<CodeViewerProps> = ({
   highlightRange = null,
 }) => {
   const [editorInstance, setEditorInstance] = useState<editor.IStandaloneCodeEditor | null>(null)
+  const { resolvedTheme } = useTheme()
 
   useHighlight(editorInstance, highlightRange)
+
+  const monacoTheme = resolvedTheme === 'dark' ? 'vs-dark' : 'light'
 
   const handleEditorDidMount = useCallback((editor: editor.IStandaloneCodeEditor) => {
     setEditorInstance(editor)
@@ -39,10 +43,11 @@ export const CodeViewer: FC<CodeViewerProps> = ({
     <div className="h-full w-full">
       <Suspense fallback={<CodeFallback code={code} />}>
         <MonacoEditor
+          key={monacoTheme}
           height="100%"
           language={language}
           value={code}
-          theme="vs-dark"
+          theme={monacoTheme}
           options={{
             readOnly: true,
             minimap: { enabled: false },

@@ -2,6 +2,7 @@ import type { FC } from 'react'
 import { lazy, Suspense, useMemo } from 'react'
 
 import { ScrollArea } from '@/ssr/components/ui/scroll-area'
+import { useTheme } from '@/ssr/hooks/useTheme'
 
 // Lazy load Monaco Editor
 const MonacoEditor = lazy(() => import('@monaco-editor/react'))
@@ -19,6 +20,8 @@ const JsonFallback: FC<{ content: string }> = ({ content }) => (
 )
 
 export const AstJsonView: FC<AstJsonViewProps> = ({ ast }) => {
+  const { resolvedTheme } = useTheme()
+
   const jsonString = useMemo(() => {
     if (!ast)
       return ''
@@ -30,14 +33,17 @@ export const AstJsonView: FC<AstJsonViewProps> = ({ ast }) => {
     }
   }, [ast])
 
+  const monacoTheme = resolvedTheme === 'dark' ? 'vs-dark' : 'light'
+
   return (
     <div className="h-full w-full">
       <Suspense fallback={<JsonFallback content={jsonString} />}>
         <MonacoEditor
+          key={monacoTheme}
           height="100%"
           language="json"
           value={jsonString}
-          theme="vs-dark"
+          theme={monacoTheme}
           options={{
             readOnly: true,
             minimap: { enabled: false },
