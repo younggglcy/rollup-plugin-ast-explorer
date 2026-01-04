@@ -42,4 +42,5 @@ const Toggle = forwardRef<
 
 Toggle.displayName = TogglePrimitive.Root.displayName
 
+// eslint-disable-next-line react-refresh/only-export-components -- Variants are commonly exported alongside components in shadcn/ui
 export { Toggle, toggleVariants }

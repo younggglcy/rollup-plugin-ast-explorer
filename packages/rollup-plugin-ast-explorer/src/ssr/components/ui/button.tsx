@@ -57,4 +57,5 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 )
 Button.displayName = 'Button'
 
+// eslint-disable-next-line react-refresh/only-export-components -- Variants are commonly exported alongside components in shadcn/ui
 export { Button, buttonVariants }

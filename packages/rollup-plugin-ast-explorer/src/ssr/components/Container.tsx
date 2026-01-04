@@ -16,7 +16,7 @@ export interface ContainerProps {
 export const Container: FC<ContainerProps> = ({ moduleInfos }) => {
   // File list
   const fileList = useMemo(() => Array.from(moduleInfos.keys()), [moduleInfos])
-  const [selectedFileId, setSelectedFileId] = useState(fileList[0] || null)
+  const [selectedFileId, setSelectedFileId] = useState(() => fileList[0] || null)
 
   // Panel resize state
   const [isPanelResized, setIsPanelResized] = useState(false)
@@ -37,17 +37,21 @@ export const Container: FC<ContainerProps> = ({ moduleInfos }) => {
     hideLocationData: false,
     hideTypeKeys: false,
   })
-  const [expandedPaths, setExpandedPaths] = useState<Set<string>>(new Set(['Program']))
+  const [expandedPaths, setExpandedPaths] = useState(() => new Set(['Program']))
 
   // Keep selection in sync with module list updates (e.g., SSE removes/renames files)
   useEffect(() => {
     if (!selectedFileId || !moduleInfos.has(selectedFileId)) {
       const next = fileList[0] || null
       if (next !== selectedFileId) {
+        // eslint-disable-next-line react-hooks-extra/no-direct-set-state-in-use-effect -- Intentional sync with external data
         setSelectedFileId(next)
         // reset state tied to selection so UI is consistent
+        // eslint-disable-next-line react-hooks-extra/no-direct-set-state-in-use-effect -- Intentional sync with external data
         setSelectedNode(null)
+        // eslint-disable-next-line react-hooks-extra/no-direct-set-state-in-use-effect -- Intentional sync with external data
         setHoveredNode(null)
+        // eslint-disable-next-line react-hooks-extra/no-direct-set-state-in-use-effect -- Intentional sync with external data
         setExpandedPaths(new Set(['Program']))
       }
     }

@@ -76,7 +76,9 @@ export const ResizablePanelLayout: FC<ResizablePanelLayoutProps> = ({
   // Reset panels when resetTrigger changes
   useEffect(() => {
     if (resetTrigger && resetTrigger > 0) {
+      // eslint-disable-next-line react-hooks-extra/no-direct-set-state-in-use-effect -- Intentional reset triggered by parent
       setLeftWidth(leftDefaultWidth)
+      // eslint-disable-next-line react-hooks-extra/no-direct-set-state-in-use-effect -- Intentional reset triggered by parent
       setRightWidth(rightDefaultWidth)
     }
   }, [resetTrigger, leftDefaultWidth, rightDefaultWidth])

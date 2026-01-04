@@ -31,6 +31,7 @@ export const Header: FC<HeaderProps> = ({ showReset, onReset }) => {
       <div className="flex items-center gap-2">
         {showReset && (
           <button
+            type="button"
             onClick={onReset}
             className={cn(
               'flex items-center gap-1.5 px-2 py-1 rounded text-xs',
@@ -44,6 +45,7 @@ export const Header: FC<HeaderProps> = ({ showReset, onReset }) => {
           </button>
         )}
         <button
+          type="button"
           onClick={toggleTheme}
           className={cn(
             'flex items-center gap-1.5 px-2 py-1 rounded text-xs',

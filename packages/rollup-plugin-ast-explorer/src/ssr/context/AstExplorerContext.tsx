@@ -129,6 +129,7 @@ export const AstExplorerProvider: FC<PropsWithChildren<{ initialModuleId?: strin
   )
 }
 
+// eslint-disable-next-line react-refresh/only-export-components -- Hook is commonly exported alongside Provider
 export function useAstExplorer(): AstExplorerContextValue {
   const context = useContext(AstExplorerContext)
   if (!context) {
