@@ -49,7 +49,7 @@
     "bumpp": "^10.4.0",
     "conventional-changelog-cli": "^5.0.0",
     "eslint": "^9.39.2",
-    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.4.26",
     "fast-glob": "^3.3.3",
     "fs-extra": "^11.3.3",
