@@ -72,8 +72,8 @@
     "clsx": "^2.1.1",
     "lucide-react": "^0.577.0",
     "monaco-editor": "^0.55.1",
-    "postcss": "^8.5.12",
-    "react-resizable-panels": "^4.10.0",
+    "postcss": "^8.5.14",
+    "react-resizable-panels": "^4.11.0",
     "tailwind-merge": "^3.5.0",
     "tailwindcss": "^4.2.4",
     "typescript": "^5.9.3"
