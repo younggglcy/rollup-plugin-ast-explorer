@@ -2,7 +2,7 @@
   "name": "@rollup-plugin-ast-explorer/workspace",
   "type": "module",
   "private": "true",
-  "packageManager": "pnpm@10.33.3",
+  "packageManager": "pnpm@10.33.4",
   "author": {
     "name": "younggglcy",
     "email": "younggglcy@gmail.com"
