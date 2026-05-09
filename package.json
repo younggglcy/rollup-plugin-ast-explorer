@@ -2,7 +2,7 @@
   "name": "@rollup-plugin-ast-explorer/workspace",
   "type": "module",
   "private": "true",
-  "packageManager": "pnpm@10.33.2",
+  "packageManager": "pnpm@10.33.3",
   "author": {
     "name": "younggglcy",
     "email": "younggglcy@gmail.com"
@@ -54,7 +54,7 @@
     "fast-glob": "^3.3.3",
     "fs-extra": "^11.3.4",
     "lint-staged": "^15.5.2",
-    "rollup": "^4.60.2",
+    "rollup": "^4.60.3",
     "rollup-plugin-ast-explorer": "workspace:*",
     "rollup-plugin-copy": "^3.5.0",
     "rollup-plugin-dts": "^6.4.1",
